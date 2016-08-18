@@ -18,14 +18,13 @@ app.listen(PORT);
 
 console.log('Server started on ' + PORT);
 
-/*PythonShell.run('lighton.py', function (err) {
+PythonShell.run('python/lighton.py', function (err) {
   if (err) throw err;
   console.log('lighton.py finished');
 });
 
 
-PythonShell.run('lightoff.py', function (err) {
+PythonShell.run('python/lightoff.py', function (err) {
  if (err) throw err;
  console.log('lightoff.py finished');
 });
-*/
