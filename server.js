@@ -43,9 +43,9 @@ app.get('/',
   function(req, res) {
 
     const status = req.body.light.status;
-    let response = status == 1 ? lightOn() || "OK - On" : lightOff() || "OK - Off";
+    let response = (status == 1 ? lightOn() : lightOff()) || "OK";
 
-    res.json({success: true, data: {pyResponse: response}});
+    res.json({success: true, data: {pyResponse: response, status: status}});
   }
 );
 

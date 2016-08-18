@@ -6,19 +6,28 @@
 
     <!-- vendor libraries -->
     <script src="vendor/jquery/dist/jquery.min.js"></script>
+
+
+    <!-- stylesheets -->
+    <link href="https://fonts.googleapis.com/css?family=VT323" rel="stylesheet">
+    <link href="vendor/font-awesome/css/font-awesome.css" rel="stylesheet">
+    <link href="build/style.css" rel="stylesheet" type="text/css" />
+
     <script>
       $(document).ready(function() {
-        $("#light").on("change", function(ele) {
+        $("input").on("change", function(ele) {
           $.ajax({
             url: "/",
             method: 'POST',
             data: $(this).serialize(),
             dataType: 'json',
             success: function(res) {
-              $(".err-container").html(res.data.pyResponse);
+              if(res.data.pyResponse == "OK") {
+                $('.icon-light').toggleClass('active');
+              }
             },
             error: function(){
-              $(".err-container").html('There has been an AJAX issue...');
+              console.warn('There has been an AJAX issue...');
             }
           });
         });
@@ -27,8 +36,13 @@
   </head>
   <body>
     <form>
-      <input id="light" type="range" min="0" max="1" value="0" name="light[status]"/>
-      <div class="err-container"></div>
+      <div class="row">
+        <span class="icon icon-light">
+          <i class="fa fa-lightbulb-o" aria-hidden="true"></i>
+        </span>
+        <label>GREEN LIGHT</label>
+        <input type="range" min="0" max="1" value="0" name="light[status]" width="100px" />
+      </div>
     </form>
   </body>
 </html>

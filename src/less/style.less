@@ -1,0 +1,71 @@
+/** IMPORTS **/
+@import '../vendor/normalize-less/normalize.less';
+
+/** VARIABLES **/
+@color-font: #575757;
+@color-main:
+@font-size-h1: 36px;
+@font-size-h2: 18px;
+@font-weight-reg: 400;
+@font-weight-bold: 700;
+
+/** MIXINS **/
+.font-default() {
+  font-family: 'VT323', monospace;
+  font-style: normal;
+  font-weight: @font-weight-reg;
+  color: @color-font;
+}
+
+/** Variables **/
+.box-shadow(@shadow: 0 1px 3px rgba(0,0,0,0.5)) {
+  -webkit-box-shadow: @shadow;
+          box-shadow: @shadow;
+}
+
+body {
+  .font-default;
+
+  .row {
+    display: flex;
+    margin: 20px;
+    width: 400px;
+
+    label {
+      font-size: 36px;
+      margin: auto;
+    }
+
+    .icon {
+      .box-shadow;
+
+      margin: auto;
+      position: relative;
+      height: 50px;
+      width: 50px;
+      background-color: orange;
+      border-radius: 5px;
+      display: flex;
+      transition: background-color 1s;
+      color: white;
+      text-transform: uppercase;
+
+      &.icon-light {
+        background-color: orange;
+
+        &.active {
+          background-color: #5F9B53;
+        }
+      }
+
+      i {
+        font-size: 35px;
+        margin: auto;
+      }
+    }
+  }
+
+  input {
+    margin: auto;
+  }
+}
