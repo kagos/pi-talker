@@ -1,0 +1,14 @@
+{
+  "name": "pi-talker",
+  "version": "0.0.1",
+  "description": "Raspberry Pi, Python, NodeJS ",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "kagos",
+  "license": "ISC",
+  "dependencies": {
+    "python-shell": "^0.4.0"
+  }
+}
