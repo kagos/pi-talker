@@ -1,5 +1,6 @@
 /** IMPORTS **/
 @import '../vendor/normalize-less/normalize.less';
+@import '../vendor/bootstrap/less/bootstrap.less';
 
 /** VARIABLES **/
 @color-font: #575757;
@@ -15,6 +16,7 @@
   font-style: normal;
   font-weight: @font-weight-reg;
   color: @color-font;
+  text-transform: uppercase;
 }
 
 /** Variables **/
@@ -28,27 +30,24 @@ body {
 
   .row {
     display: flex;
-    margin: 20px;
-    width: 400px;
+    margin: 20px 0;
 
-    label {
-      font-size: 36px;
+    span, label {
       margin: auto;
+      font-size: 36px;
     }
 
     .icon {
       .box-shadow;
 
-      margin: auto;
       position: relative;
       height: 50px;
       width: 50px;
       background-color: orange;
       border-radius: 5px;
       display: flex;
-      transition: background-color 1s;
+      transition: background-color 0.5s;
       color: white;
-      text-transform: uppercase;
 
       &.icon-light {
         background-color: orange;
@@ -63,9 +62,5 @@ body {
         margin: auto;
       }
     }
-  }
-
-  input {
-    margin: auto;
   }
 }
