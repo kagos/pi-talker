@@ -31,7 +31,7 @@
                 $(e.target).parents('.row').find('.icon').toggleClass('active', res.status == 1);
                 $(e.target).val(res.status);
 
-                alertTraceback(res.pyResponse.traceback);
+                //alertTraceback(res.pyResponse.traceback);
               },
               error: function(res) {
                 ajaxErr(res);
@@ -52,7 +52,7 @@
               success: function(res) {
                 $('#rangeResponse').text(res.data);
 
-                alertTraceback(res.pyResponse.traceback);
+                //alertTraceback(res.pyResponse.traceback);
               },
               error: function(res) {
                 ajaxErr(res);
