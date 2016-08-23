@@ -10,7 +10,6 @@ GPIO.setmode(GPIO.BCM)
 GPIO_TRIGGER = 12
 GPIO_ECHO = 21
 
-print "Ultrasonic Measurement"
 
 # Set pins as output and input
 GPIO.setup(GPIO_TRIGGER,GPIO.OUT)  # Trigger
@@ -43,7 +42,7 @@ distance = elapsed * 34000
 # That was the distance there and back so halve the value
 distance = distance / 2
 
-print "Distance : %.1f" % distance
+print "%.1f" % distance
 
 # Reset GPIO settings
 GPIO.cleanup()
