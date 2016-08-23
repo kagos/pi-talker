@@ -48,7 +48,6 @@ app.get('/', (request, response) => {
 ).post('/', (request, response) => {
 
     for(let thisUtil in request.body) {
-      console.log(request.body);
 
       let pyShell;
 
@@ -56,11 +55,10 @@ app.get('/', (request, response) => {
         case "toggle":
           // Decide on activeScript based on current status
           // TODO: script to set current status on connect
-          pyShell = new PythonShell('./python/' + ( utilities[thisUtil].status == 0 ? utilities[thisUtil].onScript : utilities[thisUtil].offScript));
+          pyShell = new PythonShell('./python/' + ( thisUtil == 0 ? utilities[thisUtil].onScript : utilities[thisUtil].offScript));
           break;
 
         case "range":
-
           pyShell = new PythonShell('./python/' + utilities[thisUtil].readScript);
           break;
       };
@@ -70,7 +68,7 @@ app.get('/', (request, response) => {
         utilities[thisUtil].status = (err) ?
           () => utilities[thisUtil].pyResponse = err :
           () => {
-            utilities[thisUtil].status == 0 ? 1 : 0;
+            utilities[thisUtil].status = request.body[thisUtil];
             utilities[thisUtil].pyResponse = resp;
           };
 
