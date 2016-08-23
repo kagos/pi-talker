@@ -5,28 +5,35 @@ const bodyParser = require('body-parser');
 const PORT = process.env.PORT || 8080;
 const router = express.Router();
 
-const lightOn = () => {
-  console.log("LightOn");
-
-  PythonShell.run('python/lighton.py', function (err) {
-    if (err) return err;
-
-    console.log('lighton.py finished');
-
-    return "OK";
-  });
-};
-
-const lightOff = () => {
-  console.log("LightOff");
-
-  PythonShell.run('python/lightoff.py', function (err) {
-   if (err) return err;
-
-   console.log('lightoff.py finished');
-
-   return "OK";
-  });
+// Define utilites
+// TODO: data from sqllite3 file
+const utilities = {
+  "light1": {
+    display: "Light 1",
+    onScript: "light1-on.py",
+    offScript: "light1-off.py",
+    type: "toggle",
+    status: 0
+  },
+  "light2": {
+    display: "Light 2",
+    onScript: "light2-on.py",
+    offScript: "light2-off.py",
+    type: "toggle",
+    status: 0
+  },
+  "outlet1": {
+    display: "Outlet 1",
+    onScript: "outlet1-on.py",
+    offScript: "outlet2-off.py",
+    type: "toggle",
+    status: 0
+  },
+  "range": {
+    display: "Range",
+    readScript: "range.py",
+    type: "range"
+  }
 };
 
 app.use(bodyParser.urlencoded({'extended':'true'}));
@@ -35,17 +42,45 @@ app.use(bodyParser.json({ type: 'application/vnd.api+json' }));
 
 app.use(express.static(__dirname + '/src'));
 
-app.get('/',
-  function(req, res) {
-    res.sendfile('src/index.html');
+app.get('/', (request, response) => {
+    response.sendfile('src/index.html');
   }
-).post('/',
-  function(req, res) {
+).post('/', (request, response) => {
 
-    const status = req.body.light.status;
-    let response = (status == 1 ? lightOn() : lightOff()) || "OK";
+    for(let thisUtil in request.body) {
+      console.log(request.body);
 
-    res.json({success: true, data: {pyResponse: response, status: status}});
+      let pyShell;
+
+      switch(utilities[thisUtil].type) {
+        case "toggle":
+          // Decide on activeScript based on current status
+          // TODO: script to set current status on connect
+          pyShell = new PythonShell('./python/' + ( utilities[thisUtil].status == 0 ? utilities[thisUtil].onScript : utilities[thisUtil].offScript));
+          break;
+
+        case "range":
+
+          pyShell = new PythonShell('./python/' + utilities[thisUtil].readScript);
+          break;
+      };
+
+      pyShell.on('message', (err, resp) => {
+
+        utilities[thisUtil].status = (err) ?
+          () => utilities[thisUtil].pyResponse = err :
+          () => {
+            utilities[thisUtil].status == 0 ? 1 : 0;
+            utilities[thisUtil].pyResponse = resp;
+          };
+
+      }).on("error", (err) => {
+        utilities[thisUtil].pyResponse = err;
+
+      }).end(() => {
+        response.json(utilities[thisUtil]);
+      });
+    }
   }
 );
 
