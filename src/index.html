@@ -14,25 +14,52 @@
     <link href="build/style.css" rel="stylesheet" type="text/css" />
 
     <script>
-      $(document).ready(function() {
-        $("input").on("change", function(e) {
-          $.ajax({
-            url: "/",
-            method: 'POST',
-            data: $(this).serialize(),
-            dataType: 'json',
-            success: function(res) {
-              if(res.data.pyResponse == "OK") {
-                $(e.target).parents('.row').find('.icon').toggleClass('active', res.data.status == "1");
-              } else {
+      'use strict';
 
+      const ajaxErr = (res) => console.warn('There was an connecting to the Server: \n' + res);
+      const alertTraceback = (trace) => { if (trace) alert(trace); };
+
+      $(document).ready(function() {
+        $("input[type='range']").on("change",
+          function sendPOST(e) {
+            $.ajax({
+              url: "/",
+              method: 'POST',
+              data: $(this).serialize(),
+              dataType: 'json',
+              success: function(res) {
+                $(e.target).parents('.row').find('.icon').toggleClass('active', res.status == 1);
+                $(e.target).val(res.status);
+
+                alertTraceback(res.pyResponse.traceback);
+              },
+              error: function(res) {
+                ajaxErr(res);
               }
-            },
-            error: function(){
-              console.warn('There has been an AJAX issue...');
-            }
-          });
-        });
+            });
+          }
+        );
+
+        $(".btn").on("click",
+          function sendPOST(e) {
+            e.preventDefault();
+
+            $.ajax({
+              url: "/",
+              method: 'POST',
+              data: { range: 1 },
+              dataType: 'json',
+              success: function(res) {
+                $('#rangeResponse').text(res.data);
+
+                alertTraceback(res.pyResponse.traceback);
+              },
+              error: function(res) {
+                ajaxErr(res);
+              }
+            });
+          }
+        );
       });
     </script>
   </head>
@@ -43,12 +70,41 @@
       <form>
         <div class="container-fluid">
           <div class="row">
-            <span class="icon icon-light col-lg-2 col-md-4 col-sm-0">
+            <span class="icon icon-light col-lg-2">
               <i class="fa fa-lightbulb-o" aria-hidden="true"></i>
             </span>
-            <label class="col-lg-8 col-med-4 col-sm-6">Green Light</label>
-            <span class="col-lg-2 col-md-4 col-sm-6">
-              <input type="range" min="0" max="1" value="0" name="light[status]" />
+            <label class="col-lg-8">Light 1</label>
+            <span class="col-lg-2 ">
+              <input type="range" min="0" max="1" value="0" name="light1" />
+            </span>
+          </div>
+          <hr />
+          <div class="row">
+            <span class="icon icon-light col-lg-2">
+              <i class="fa fa-lightbulb-o" aria-hidden="true"></i>
+            </span>
+            <label class="col-lg-8">Light 2</label>
+            <span class="col-lg-2">
+              <input type="range" min="0" max="1" value="0" name="light2" />
+            </span>
+          </div>
+          <hr />
+          <div class="row">
+            <span class="icon icon-plug col-lg-2">
+              <i class="fa fa-plug" aria-hidden="true"></i>
+            </span>
+            <label class="col-lg-8">Outlet 1</label>
+            <span class="col-lg-2">
+              <input type="range" min="0" max="1" value="0" name="outlet1" />
+            </span>
+          </div>
+          <hr />
+          <div class="row">
+            <div class="col-lg-10">
+              <button class="btn btn-info" value="Range" style="font-size: 36px;">Return Range</button>
+            </div>
+            <span class="col-lg-2">
+              <p id="rangeResponse"></p>
             </span>
           </div>
         </div>
