@@ -50,7 +50,7 @@
               data: { range: 1 },
               dataType: 'json',
               success: function(res) {
-                $('#rangeResponse').text(JSON.stringify(res));
+                $('#rangeResponse').text(JSON.stringify(res.pyResponse));
 
                 //alertTraceback(res.pyResponse.traceback);
               },
