@@ -78,7 +78,8 @@ app.get('/', (request, response) => {
 
       }).end(() => {
         console.log(".end");
-
+        
+        utilities[thisUtil].status = request.body[thisUtil];
         response.json(utilities[thisUtil]);
       });
     }

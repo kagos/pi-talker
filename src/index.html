@@ -16,7 +16,7 @@
     <script>
       'use strict';
 
-      const ajaxErr = (res) => console.warn('There was an connecting to the Server: \n' + res);
+      const ajaxErr = (res) => console.warn('There was an ERROR connecting to the Server: \n' + res);
       const alertTraceback = (trace) => { if (trace) alert(trace); };
 
       $(document).ready(function() {
@@ -27,7 +27,7 @@
               method: 'POST',
               data: $(this).serialize(),
               dataType: 'json',
-              success: function(res) {
+              success: function(res) {  
                 $(e.target).parents('.row').find('.icon').toggleClass('active', res.status == 1);
                 $(e.target).val(res.status);
 
