@@ -50,12 +50,15 @@ app.get('/', (request, response) => {
     for(let thisUtil in request.body) {
 
       let activeScript;
+      const currentStatus = request.body[thisUtil];
+
+      utilities[thisUtil].status = currentStatus;
 
       switch(utilities[thisUtil].type) {
         case "toggle":
           // Decide on activeScript based on current status
           // TODO: script to set current status on connect
-          activeScript = './python/' + ( request.body[thisUtil] == 0 ? utilities[thisUtil].onScript : utilities[thisUtil].offScript);
+          activeScript = './python/' + ( utilities[thisUtil].status == 1 ? utilities[thisUtil].onScript : utilities[thisUtil].offScript);
           break;
 
         case "range":
@@ -67,9 +70,8 @@ app.get('/', (request, response) => {
         utilities[thisUtil].pyResponse = (err) ? err : resp;
       }).on("error", (err) => {
         utilities[thisUtil].pyResponse = err;
-
+        utilities[thisUtil].status = 0;
       }).end(() => {
-        utilities[thisUtil].status = request.body[thisUtil];
         response.json(utilities[thisUtil]);
       });
     }
