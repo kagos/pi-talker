@@ -49,21 +49,21 @@ app.get('/', (request, response) => {
 
     for(let thisUtil in request.body) {
 
-      let pyShell;
+      let activeScript;
 
       switch(utilities[thisUtil].type) {
         case "toggle":
           // Decide on activeScript based on current status
           // TODO: script to set current status on connect
-          pyShell = new PythonShell('./python/' + ( thisUtil == 0 ? utilities[thisUtil].onScript : utilities[thisUtil].offScript));
+          activeScript = './python/' + ( thisUtil == 0 ? utilities[thisUtil].onScript : utilities[thisUtil].offScript);
           break;
 
         case "range":
-          pyShell = new PythonShell('./python/' + utilities[thisUtil].readScript);
+          activeScript = './python/' + utilities[thisUtil].readScript;
           break;
       };
 
-      pyShell.on('message', (err, resp) => {
+      PythonShell.run(activeScript, (err, resp) => {
         utilities[thisUtil].pyResponse = (err) ? err : resp;
 
       }).on("error", (err) => {
