@@ -8,6 +8,13 @@ const router = express.Router();
 // Define utilites
 // TODO: data from sqllite3 file
 const utilities = {
+  "greenLight": {
+    display: "Green Light",
+    onScript: "lighton.py",
+    offScript: "lightoff.py",
+    type: "toggle",
+    status: 0
+  },
   "light1": {
     display: "Light 1",
     onScript: "light1-on.py",
