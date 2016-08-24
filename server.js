@@ -55,7 +55,7 @@ app.get('/', (request, response) => {
         case "toggle":
           // Decide on activeScript based on current status
           // TODO: script to set current status on connect
-          activeScript = './python/' + ( thisUtil == 0 ? utilities[thisUtil].onScript : utilities[thisUtil].offScript);
+          activeScript = './python/' + ( request.body[thisUtil] == 0 ? utilities[thisUtil].onScript : utilities[thisUtil].offScript);
           break;
 
         case "range":
@@ -65,7 +65,6 @@ app.get('/', (request, response) => {
 
       PythonShell.run(activeScript, (err, resp) => {
         utilities[thisUtil].pyResponse = (err) ? err : resp;
-
       }).on("error", (err) => {
         utilities[thisUtil].pyResponse = err;
 
