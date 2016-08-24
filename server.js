@@ -64,21 +64,12 @@ app.get('/', (request, response) => {
       };
 
       pyShell.on('message', (err, resp) => {
-        console.log(".message - \n" + request.body[thisUtil]);
-
-        if(err) {
-          throw err;
-        } else {
-          utilities[thisUtil].status = request.body[thisUtil];
-          utilities[thisUtil].pyResponse = resp;
-        }
+        utilities[thisUtil].pyResponse = (err) ? err : resp;
 
       }).on("error", (err) => {
         utilities[thisUtil].pyResponse = err;
 
       }).end(() => {
-        console.log(".end");
-        
         utilities[thisUtil].status = request.body[thisUtil];
         response.json(utilities[thisUtil]);
       });
