@@ -27,7 +27,7 @@
               method: 'POST',
               data: $(this).serialize(),
               dataType: 'json',
-              success: function(res) {  
+              success: function(res) {
                 $(e.target).parents('.row').find('.icon').toggleClass('active', res.status == 1);
                 $(e.target).val(res.status);
 
@@ -50,7 +50,7 @@
               data: { range: 1 },
               dataType: 'json',
               success: function(res) {
-                $('#rangeResponse').text(res.data);
+                $('#rangeResponse').text(JSON.stringify(res));
 
                 //alertTraceback(res.pyResponse.traceback);
               },
