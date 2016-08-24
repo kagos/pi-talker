@@ -64,9 +64,10 @@ app.get('/', (request, response) => {
       };
 
       pyShell.on('message', (err, resp) => {
+        console.log(".message - \n" + request.body[thisUtil]);
 
         if(err) {
-          utilities[thisUtil].pyResponse = err;
+          throw err;
         } else {
           utilities[thisUtil].status = request.body[thisUtil];
           utilities[thisUtil].pyResponse = resp;
@@ -76,6 +77,8 @@ app.get('/', (request, response) => {
         utilities[thisUtil].pyResponse = err;
 
       }).end(() => {
+        console.log(".end");
+
         response.json(utilities[thisUtil]);
       });
     }
