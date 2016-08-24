@@ -40,7 +40,7 @@
           }
         );
 
-        $(".btn").on("click",
+        $("#range1").on("click",
           function sendPOST(e) {
             e.preventDefault();
 
@@ -51,6 +51,27 @@
               dataType: 'json',
               success: function(res) {
                 $('#rangeResponse').text(JSON.stringify(res.pyResponse));
+
+                //alertTraceback(res.pyResponse.traceback);
+              },
+              error: function(res) {
+                ajaxErr(res);
+              }
+            });
+          }
+        );
+
+        $("#snapshot1").on("click",
+          function sendPOST(e) {
+            e.preventDefault();
+
+            $.ajax({
+              url: "/",
+              method: 'POST',
+              data: { snapshot: 1 },
+              dataType: 'json',
+              success: function(res) {
+                $('#snapshotPreview').text(JSON.stringify(res.pyResponse));
 
                 //alertTraceback(res.pyResponse.traceback);
               },
@@ -111,10 +132,19 @@
           <hr />
           <div class="row">
             <div class="col-lg-10">
-              <button class="btn btn-info" value="Range" style="font-size: 36px;">Return Range</button>
+              <button id="range1" class="btn btn-info" value="Range" style="font-size: 36px;">Return Range</button>
             </div>
             <span class="col-lg-2">
               <p id="rangeResponse"></p>
+            </span>
+          </div>
+          <hr />
+          <div class="row">
+            <div class="col-lg-10">
+              <button id="snapshot1" class="btn btn-alert" value="Snapshot" style="font-size: 36px;">Snapshot</button>
+            </div>
+            <span class="col-lg-2">
+              <p id="snapshotPreview"></p>
             </span>
           </div>
         </div>

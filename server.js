@@ -40,6 +40,11 @@ const utilities = {
     display: "Range",
     readScript: "range.py",
     type: "range"
+  },
+  "snapshot": {
+    display: "Snapshot",
+    snapshotScript: "buttonpush.py",
+    type: "range"
   }
 };
 
@@ -65,11 +70,16 @@ app.get('/', (request, response) => {
         case "toggle":
           // Decide on activeScript based on current status
           // TODO: script to set current status on connect
-          activeScript = './python/' + ( utilities[thisUtil].status == 1 ? utilities[thisUtil].onScript : utilities[thisUtil].offScript);
+          activeScript = './python/' + ( utilities[thisUtil].status == 1 ?
+            utilities[thisUtil].onScript : utilities[thisUtil].offScript);
           break;
 
         case "range":
           activeScript = './python/' + utilities[thisUtil].readScript;
+          break;
+
+        case "snapshot":
+          activeScript = './python/' + utilities[thisUtil].snapshotScript;
           break;
       };
 
