@@ -43,7 +43,7 @@ const utilities = {
   },
   "snapshot": {
     display: "Snapshot",
-    activeScript: "cameraPreview.py",
+    activeScript: "camerapreview.py",
     type: "range"
   }
 };
