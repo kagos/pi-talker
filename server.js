@@ -68,9 +68,6 @@ app.get('/', (request, response) => {
 
       PythonShell.run(activeScript, (err, resp) => {
         utilities[thisUtil].pyResponse = (err) ? err : resp;
-      }).on("error", (err) => {
-        utilities[thisUtil].pyResponse = err;
-        utilities[thisUtil].status = 0;
       }).end(() => {
         response.json(utilities[thisUtil]);
       });
