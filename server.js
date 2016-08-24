@@ -32,18 +32,18 @@ const utilities = {
   "outlet1": {
     display: "Outlet 1",
     onScript: "outlet1-on.py",
-    offScript: "outlet2-off.py",
+    offScript: "outlet1-off.py",
     type: "toggle",
     status: 0
   },
   "range": {
     display: "Range",
-    readScript: "range.py",
+    activeScript: "range.py",
     type: "range"
   },
   "snapshot": {
     display: "Snapshot",
-    snapshotScript: "buttonpush.py",
+    activeScript: "buttonpush.py",
     type: "range"
   }
 };
@@ -74,12 +74,8 @@ app.get('/', (request, response) => {
             utilities[thisUtil].onScript : utilities[thisUtil].offScript);
           break;
 
-        case "range":
-          activeScript = './python/' + utilities[thisUtil].readScript;
-          break;
-
-        case "snapshot":
-          activeScript = './python/' + utilities[thisUtil].snapshotScript;
+        default:
+          activeScript = './python/' + utilities[thisUtil].activeScript;
           break;
       };
 
