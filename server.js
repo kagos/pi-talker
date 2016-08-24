@@ -65,12 +65,12 @@ app.get('/', (request, response) => {
 
       pyShell.on('message', (err, resp) => {
 
-        utilities[thisUtil].status = (err) ?
-          () => utilities[thisUtil].pyResponse = err :
-          () => {
-            utilities[thisUtil].status = request.body[thisUtil];
-            utilities[thisUtil].pyResponse = resp;
-          };
+        if(err) {
+          utilities[thisUtil].pyResponse = err;
+        } else {
+          utilities[thisUtil].status = request.body[thisUtil];
+          utilities[thisUtil].pyResponse = resp;
+        }
 
       }).on("error", (err) => {
         utilities[thisUtil].pyResponse = err;
