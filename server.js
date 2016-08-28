@@ -1,12 +1,25 @@
-const PythonShell = require('python-shell');
 const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
 const PORT = process.env.PORT || 8080;
 const router = express.Router();
 
+const PythonShell = require('python-shell');
+PythonShell.defaultOptions = { scriptPath: './python' };
+
+/* TODO:
++   Get init status of Utilities from API
++   Pic preview
+++    Create /preview-img/ folder
++   ngFramework implemented
++   Video stream up
++   Config interface for NA
++   Security
+++    config sudo per env
++   Utilities from data file
+*/
+
 // Define utilites
-// TODO: data from sqllite3 file
 const utilities = {
   "greenLight": {
     display: "Green Light",
@@ -62,20 +75,18 @@ app.get('/', (request, response) => {
     for(let thisUtil in request.body) {
 
       let activeScript;
-      const currentStatus = request.body[thisUtil];
 
-      utilities[thisUtil].status = currentStatus;
+      utilities[thisUtil].status = request.body[thisUtil];
 
       switch(utilities[thisUtil].type) {
         case "toggle":
           // Decide on activeScript based on current status
-          // TODO: script to set current status on connect
-          activeScript = './python/' + ( utilities[thisUtil].status == 1 ?
-            utilities[thisUtil].onScript : utilities[thisUtil].offScript);
+          activeScript = utilities[thisUtil].status == 1 ?
+            utilities[thisUtil].onScript : utilities[thisUtil].offScript;
           break;
 
         default:
-          activeScript = './python/' + utilities[thisUtil].activeScript;
+          activeScript = utilities[thisUtil].activeScript;
           break;
       };
 
