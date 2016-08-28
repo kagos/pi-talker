@@ -24,3 +24,5 @@ print ('file', filename)
 GPIO.output(led, 0) # Close LED
 
 GPIO.cleanup() #cleanup GPIO hooks in kernel
+
+return filename;

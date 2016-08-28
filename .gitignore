@@ -2,4 +2,4 @@
 *.log
 /src/vendor/*
 /src/build/*
-/preview-img/*
+/preview-img/*.jpg
