@@ -1,6 +1,5 @@
 'use strict';
 
-// resp = { value: 100 || err: "[ExitCode=01]" }
 const handleSensorResponse = (resp, units) => {
   if(!resp)
     return " is not responding"
@@ -11,7 +10,7 @@ const handleSensorResponse = (resp, units) => {
   if(resp.status && !resp.units)
     return " is " + resp.status;
 
-  return " is " + resp[0].value + " " + units;
+  return " is " + resp.value[0] + " " + units;
 };
 
 const utilities = [
