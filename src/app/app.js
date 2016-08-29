@@ -135,7 +135,7 @@ angular.module('piTalkerApp', [
 
     _this.startSensorArray = (intervalLengthMS) => {
       for(let x = 0; x < sensors.length; x++) {
-        if(this.resp && !this.resp.errMsg) {
+        if(this.resp && !this.resp.err) {
           $interval(() => {
             sensors[x].resp = _this.triggerSensorReading(sensors[x]);
           }, intervalLengthMS);

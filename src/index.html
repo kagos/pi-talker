@@ -31,7 +31,7 @@
                 ng-click="main.triggerAction(actionObj.uid, action.uid)" ng-init="showPreview=(actionObj.uid === 'camera')">
                 {{actionObj.label}} {{action.label}}
               </button>
-              <img class="thumbnail" src="img/no_image.png" ngSrc="{{action.value}}" width="100%" height="auto" ng-if="showPreview" />
+              <img class="thumbnail animate-if" src="img/no_image.png" ngSrc="{{action.msg.data.value}}" width="100%" height="auto" ng-if="showPreview" />
             </li>
           </ul>
         </div>
@@ -43,7 +43,7 @@
             <tr ng-repeat="sensor in main.sensors">
               <th style="white-space: nowrap">{{sensor.label}}</th>
               <td ng-init="main.triggerSensorReading(sensor)" style="text-align: left">
-                {{sensor.msg.err || sensor.msg.success}}
+                {{sensor.msg.value || sensor.msg.err}}
               </td>
             </tr>
           </table>
@@ -54,7 +54,9 @@
           <div class="panel-heading">Utilities</div>
           <ul class="list-group">
             <li ng-repeat="util in main.utilities" class="list-group-item">
-              <i class="fa {{(util.value == 0 || !util.value ? 'fa-circle' : 'fa-dot-circle-o')}}"
+              <i class="fa
+                {{!util.msg.data.status || util.msg.data.status === 0 || util.msg.data.err ? 'fa-circle' : 'fa-dot-circle-o'}}
+                {{util.msg.data.err ? 'icon-alert' : ''}}"
                 aria-hidden="true"
                 ng-click="main.changeUtilityStatus(util)"></i>
               <label>{{util.label}}</label>

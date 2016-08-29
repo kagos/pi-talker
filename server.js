@@ -72,7 +72,8 @@ const runPyScript = (obj, resp) => {
   PythonShell.run(obj.activeScript, function(_err, _resp) {
     obj.msg = {
       err: _err,
-      value: _resp || ""
+      value: _resp,
+      status: obj.status
     };
     resp.json(obj.msg);
   });
