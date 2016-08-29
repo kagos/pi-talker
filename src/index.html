@@ -33,7 +33,7 @@
                 {{actionObj.label}} {{action.label}}
               </button>
               <img class="thumbnail animate-if" src="img/no_image.png"
-                ngSrc="action.msg.data.value.replace('src/','')"
+                ng-src="{{action.imgSrc}}"
                 width="100%" height="auto" ng-if="showPreview" />
             </li>
           </ul>
@@ -44,8 +44,8 @@
           <div class="panel-heading">Sensors</div>
           <table class="table">
             <tr ng-repeat="sensor in main.sensors">
-              <th style="white-space: nowrap">{{sensor.label}}</th>
-              <td ng-init="main.triggerSensorReading(sensor)" style="text-align: left">
+              <th style="white-space: nowrap" width="100">{{sensor.label}}</th>
+              <td ng-init="main.triggerSensorReading(sensor)">
                 {{sensor.msg.success || sensor.msg.err}}
               </td>
             </tr>
