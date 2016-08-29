@@ -47,7 +47,9 @@ const sensors = [
   {
     uid: "range",
     label: "Distance",
-    conversion: (val) => val * 2.56,
+    conversion: (val) => {
+      return Number.toFixed(val * 0.393701, 2);
+    },
     units: "inches",
     msg: {
       success: "",
@@ -116,7 +118,7 @@ angular.module('piTalkerApp', [
             if(actions[action].uid === actionObjUid) {
               for(let avail in action) {
                 if(actions[action].available[avail].uid === actionUid) {
-                  actions[action].available[avail].msg = resp.value;
+                  actions[action].available[avail].imgSrc = resp.value;
                 }
               }
             }
