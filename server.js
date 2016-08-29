@@ -95,10 +95,9 @@ app.get('/', (request, response) => {
 
   PythonShell.run(camera[request.params.uid].activeScript, function(err, resp) {
     camera[request.params.uid].imgSrc = resp;
-    response.json({imgSrc: (resp.replace("/src/","") || "/img/no_image.png")});
+    response.json(resp || "/img/no_image.png");
   });
 });
-
 
 app.use('/api', router);
 app.listen(PORT);
