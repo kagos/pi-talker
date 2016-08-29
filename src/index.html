@@ -31,7 +31,7 @@
                 ng-click="main.triggerAction(actionObj.uid, action.uid)" ng-init="showPreview=(actionObj.uid === 'camera')">
                 {{actionObj.label}} {{action.label}}
               </button>
-              <img class="thumbnail animate-if" src="img/no_image.png" ngSrc="{{action.msg.data.value}}" width="100%" height="auto" ng-if="showPreview" />
+              <img class="thumbnail animate-if" src="img/no_image.png" ngSrc="{{action.msg.data.value[0].replace('src/','')}}" width="100%" height="auto" ng-if="showPreview" />
             </li>
           </ul>
         </div>
@@ -55,7 +55,10 @@
           <ul class="list-group">
             <li ng-repeat="util in main.utilities" class="list-group-item">
               <i class="fa
-                {{!util.msg.data.status || util.msg.data.status === 0 || util.msg.data.err ? 'fa-circle' : 'fa-dot-circle-o'}}
+                {{!util.msg.data.status
+                  || (util.msg.data.status === 0 && !util.msg.data.err)
+                  || util.msg.data.err ?
+                    'fa-circle' : 'fa-dot-circle-o'}}
                 {{util.msg.data.err ? 'icon-alert' : ''}}"
                 aria-hidden="true"
                 ng-click="main.changeUtilityStatus(util)"></i>
