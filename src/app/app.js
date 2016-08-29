@@ -1,9 +1,6 @@
 'use strict';
 
 const handleSensorResponse = (resp, sensorObj) => {
-  if(!resp || !resp.data)
-    return " is not responding"
-
   if(resp.data.err) {
     sensorObj.msg.err = " is not returning a value; error: "
       + resp.data.err.traceback;
@@ -15,6 +12,8 @@ const handleSensorResponse = (resp, sensorObj) => {
         resp.data.success)
       + " " + sensorObj.units;
   }
+
+  return sensorObj;
 };
 
 const utilities = [
@@ -105,7 +104,7 @@ angular.module('piTalkerApp', [
 
     _this.triggerSensorReading = (sensorObj) =>
       $http.get("sensor/" + sensorObj.uid).then((response) =>
-        handleSensorResponse(response, sensorObj)
+        sensorObj = handleSensorResponse(response, sensorObj)
       );
 
     _this.triggerAction = (actionObjUid, actionUid) =>
@@ -137,7 +136,7 @@ angular.module('piTalkerApp', [
       for(let x = 0; x < sensors.length; x++) {
         if(this.resp && !this.resp.err) {
           $interval(() => {
-            sensors[x].resp = _this.triggerSensorReading(sensors[x]);
+            sensors[x].value = _this.triggerSensorReading(sensors[x]);
           }, intervalLengthMS);
         }
       }
