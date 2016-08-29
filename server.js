@@ -22,25 +22,21 @@ PythonShell.defaultOptions = { scriptPath: './python' };
 // Define utilites
 const utilities = {
 	"greenLight": {
-		display: "Green Light",
 		onScript: "lighton.py",
 		offScript: "lightoff.py",
 		status: 0
 	},
 	"light1": {
-		display: "Light 1",
 		onScript: "light1-on.py",
 		offScript: "light1-off.py",
 		status: 0
 	},
 	"light2": {
-		display: "Light 2",
 		onScript: "light2-on.py",
 		offScript: "light2-off.py",
 		status: 0
 	},
 	"outlet1": {
-		display: "Outlet 1",
 		onScript: "outlet1-on.py",
 		offScript: "outlet1-off.py",
 		status: 0
@@ -76,10 +72,11 @@ app.get('/', (request, response) => {
 
 }).get('/utility/:uid/status', (request, response) => {
   const thisUtil = utilities[request.params.uid];
-  const activeScript = thisUtil.status == 0 ?
-    thisUtil.offScript : thisUtil.onScript;
 
   utilities[request.params.uid].status = thisUtil.status == 0 ? 1 : 0;
+
+  const activeScript = thisUtil.status == 0 ?
+    thisUtil.offScript : thisUtil.onScript;
 
   PythonShell.run(activeScript, function(err, resp) {
     utilities[request.params.uid].pyResponse = (err) ? err : resp;
@@ -98,7 +95,7 @@ app.get('/', (request, response) => {
 
   PythonShell.run(camera[request.params.uid].activeScript, function(err, resp) {
     camera[request.params.uid].imgSrc = resp;
-    response.json(camera[request.params.uid].imgSrc);
+    response.json({imgSrc: (resp || "/img/no_image.png")});
   });
 });
 

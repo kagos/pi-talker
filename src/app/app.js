@@ -99,7 +99,9 @@ angular.module('piTalkerApp', [
       for(let x = 0; x < camera.length; x++) {
         if(camera[x].uid === func.uid) {
           $http.get("camera/" + func.uid).then(function (response) {
-            camera[x].imgSrc = response;
+            camera[x].imgSrc = response.data.imgSrc;
+
+            console.log(camera[x].imgSrc);
           });
         }
       }

@@ -52,10 +52,10 @@
         <div class="panel panel-primary">
           <div class="panel-heading">Camera Preview</div>
           <ul class="list-group">
-            <li ng-repeat="func in main.camera" class="list-group-item" style="height: 300px">
+            <li ng-repeat="func in main.camera" class="list-group-item" style="height: 450px">
               <button class="btn btn-info btn-med"
                 ng-click="main.triggerCamera(func)"><i class="fa fa-camera"></i></button>
-              <img ng-src="{{func.imgSrc}}" width="auto" height="400" />
+              <img ng-src="{{func.imgSrc}}" width="auto" height="400" style="margin: 20px;" />
             </li>
           </ul>
         </div>
