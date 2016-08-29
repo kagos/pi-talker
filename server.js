@@ -51,14 +51,19 @@ const sensors = {
 	"range": {
 		activeScript: "range.py"
 	},
-	"snapshot": {
-		activeScript: "camerapreview.py"
+	"brightness": {
+		activeScript: "brightness.py"
 	},
 	"garageDoor": {
-		display: "Garage Door",
 		activeScript: "garagedoor.py"
 	}
 };
+
+const camera = {
+  "snapshot": {
+    activeScript: "camerapreview.py"
+  }
+}
 
 app.use(bodyParser.urlencoded({'extended':'true'}));
 app.use(bodyParser.json());
@@ -88,6 +93,12 @@ app.get('/', (request, response) => {
       resp: resp
     }
     response.json(sensors[request.params.uid].pyResponse);
+  });
+}).get('/camera/:uid', (request, response) => {
+
+  PythonShell.run(camera[request.params.uid].activeScript, function(err, resp) {
+    camera[request.params.uid].imgSrc = resp;
+    response.json(camera[request.params.uid].imgSrc);
   });
 });
 

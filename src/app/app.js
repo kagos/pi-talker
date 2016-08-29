@@ -11,7 +11,7 @@ const handleSensorResponse = (resp, units) => {
   if(resp.status && !resp.units)
     return " is " + resp.status;
 
-  return " is " + resp.value + " " + units;
+  return " is " + resp[0].value + " " + units;
 };
 
 const utilities = [
@@ -49,7 +49,7 @@ const sensors = [
     statusMsgConfig: handleSensorResponse
   },
   {
-    uid: "snapshot",
+    uid: "brightness",
     label: "Photo Cell",
     units: "Lumens",
     statusMsgConfig: handleSensorResponse
@@ -58,6 +58,14 @@ const sensors = [
     uid: "garageDoor",
     label: "Garage Door",
     statusMsgConfig: handleSensorResponse
+  }
+];
+
+const camera = [
+  {
+    uid: "snapshot",
+    label: "Camera",
+    icon: "fa-camera"
   }
 ];
 
@@ -87,6 +95,17 @@ angular.module('piTalkerApp', [
       }
     };
 
+    this.triggerCamera = function(func) {
+      for(let x = 0; x < camera.length; x++) {
+        if(camera[x].uid === func.uid) {
+          $http.get("camera/" + func.uid).then(function (response) {
+            camera[x].imgSrc = response;
+          });
+        }
+      }
+    }
+
     this.utilities = utilities;
     this.sensors = sensors;
+    this.camera = camera;
 }]);
