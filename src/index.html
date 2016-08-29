@@ -19,7 +19,7 @@
     <!-- app common -->
     <script src="app/app.js"></script>
   </head>
-  <body ng-controller="MainCtrl as main" class="container-fluid">
+  <body ng-cloak="true" ng-controller="MainCtrl as main" class="container-fluid">
     <div class="row">
       <div class="col-lg-4 col-sm-12">
         <div class="panel panel-primary">
@@ -33,7 +33,7 @@
                 {{actionObj.label}} {{action.label}}
               </button>
               <img class="thumbnail animate-if" src="img/no_image.png"
-                ng-src="{{action.msg.data.value[0].replace('src/','')}}"
+                ng-src="{{action.msg.data.value.replace('src/','')}}"
                 width="100%" height="auto" ng-if="showPreview" />
             </li>
           </ul>

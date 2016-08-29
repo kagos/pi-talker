@@ -5,11 +5,11 @@ const handleSensorResponse = (resp, sensorObj) => {
     sensorObj.msg.err = " is not returning a value; error: "
       + resp.data.err.traceback;
   }
-  else if(resp.data.success) {
+  else if(resp.data.value) {
     sensorObj.msg.success = " is "
       + (sensorObj.conversion ?
-        sensorObj.conversion(resp.data.success/1) :
-        resp.data.success)
+        sensorObj.conversion(resp.data.value/1) :
+        resp.data.value/1)
       + " " + sensorObj.units;
   }
 

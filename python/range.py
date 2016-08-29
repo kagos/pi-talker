@@ -42,7 +42,7 @@ distance = elapsed * 34000
 # That was the distance there and back so halve the value
 distance = distance / 2
 
-print "%.1f" % distance
+print distance;
 
 # Reset GPIO settings
 GPIO.cleanup()
