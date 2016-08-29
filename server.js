@@ -8,57 +8,56 @@ const PythonShell = require('python-shell');
 PythonShell.defaultOptions = { scriptPath: './python' };
 
 /* TODO:
-+   Get init status of Utilities from API
-+   Pic preview
-++    Create /preview-img/ folder
-+   ngFramework implemented
-+   Video stream up
-+   Config interface for NA
-+   Security
-++    config sudo per env
-+   Utilities from data file
++	 Get init status of Utilities from API
++	 Pic preview
+++		Create /preview-img/ folder
++	 ngFramework implemented
++	 Video stream up
++	 Config interface for NA
++	 Security
+++		config sudo per env
++	 Utilities from data file
 */
 
 // Define utilites
 const utilities = {
-  "greenLight": {
-    display: "Green Light",
-    onScript: "lighton.py",
-    offScript: "lightoff.py",
-    type: "toggle",
-    status: 0
-  },
-  "light1": {
-    display: "Light 1",
-    onScript: "light1-on.py",
-    offScript: "light1-off.py",
-    type: "toggle",
-    status: 0
-  },
-  "light2": {
-    display: "Light 2",
-    onScript: "light2-on.py",
-    offScript: "light2-off.py",
-    type: "toggle",
-    status: 0
-  },
-  "outlet1": {
-    display: "Outlet 1",
-    onScript: "outlet1-on.py",
-    offScript: "outlet1-off.py",
-    type: "toggle",
-    status: 0
-  },
-  "range": {
-    display: "Range",
-    activeScript: "range.py",
-    type: "range"
-  },
-  "snapshot": {
-    display: "Snapshot",
-    activeScript: "camerapreview.py",
-    type: "range"
-  }
+	"greenLight": {
+		display: "Green Light",
+		onScript: "lighton.py",
+		offScript: "lightoff.py",
+		status: 0
+	},
+	"light1": {
+		display: "Light 1",
+		onScript: "light1-on.py",
+		offScript: "light1-off.py",
+		status: 0
+	},
+	"light2": {
+		display: "Light 2",
+		onScript: "light2-on.py",
+		offScript: "light2-off.py",
+		status: 0
+	},
+	"outlet1": {
+		display: "Outlet 1",
+		onScript: "outlet1-on.py",
+		offScript: "outlet1-off.py",
+		status: 0
+	}
+};
+
+const sensors = {
+	"range": {
+		activeScript: "range.py"
+	},
+	"snapshot": {
+		activeScript: "camerapreview.py"
+	},
+	"garageDoor": {
+		display: "Garage Door",
+		activeScript: "garagedoor.py"
+	}
 };
 
 app.use(bodyParser.urlencoded({'extended':'true'}));
@@ -68,36 +67,30 @@ app.use(bodyParser.json({ type: 'application/vnd.api+json' }));
 app.use(express.static(__dirname + '/src'));
 
 app.get('/', (request, response) => {
-    response.sendfile('src/index.html');
-  }
-).post('/', (request, response) => {
+  response.sendfile('src/angularIndex.html');
 
-    for(let thisUtil in request.body) {
+}).get('/utility/:uid/status', (request, response) => {
+  const thisUtil = utilities[request.params.uid];
+  const activeScript = thisUtil.status == 0 ?
+    thisUtil.offScript : thisUtil.onScript;
 
-      let activeScript;
+  utilities[request.params.uid].status = thisUtil.status == 0 ? 1 : 0;
 
-      utilities[thisUtil].status = request.body[thisUtil];
+  PythonShell.run(activeScript, function(err, resp) {
+    utilities[request.params.uid].pyResponse = (err) ? err : resp;
+    response.json(utilities[request.params.uid].status);
+  });
+}).get('/sensor/:uid', (request, response) => {
 
-      switch(utilities[thisUtil].type) {
-        case "toggle":
-          // Decide on activeScript based on current status
-          activeScript = utilities[thisUtil].status == 1 ?
-            utilities[thisUtil].onScript : utilities[thisUtil].offScript;
-          break;
-
-        default:
-          activeScript = utilities[thisUtil].activeScript;
-          break;
-      };
-
-      PythonShell.run(activeScript, function(err, resp) {
-        utilities[thisUtil].pyResponse = (err) ? err : resp;
-
-        response.json(utilities[thisUtil]);
-      });
+  PythonShell.run(sensors[request.params.uid].activeScript, function(err, resp) {
+    sensors[request.params.uid].pyResponse = {
+      err: err,
+      resp: resp
     }
-  }
-);
+    response.json(sensors[request.params.uid].pyResponse);
+  });
+});
+
 
 app.use('/api', router);
 app.listen(PORT);

@@ -12,11 +12,9 @@
 
 /** MIXINS **/
 .font-default() {
-  font-family: 'VT323', monospace;
   font-style: normal;
   font-weight: @font-weight-reg;
   color: @color-font;
-  text-transform: uppercase;
 }
 
 /** Variables **/
@@ -26,50 +24,55 @@
 }
 
 body {
-  .font-default;
+  .font-default();
 
   .row {
     display: flex;
     margin: 20px 0;
 
-    span, label {
-      margin: auto;
-      font-size: 36px;
+    .panel-heading {
+      font-weight: @font-weight-bold;
+      text-transform: uppercase;
     }
 
-    button {
-      .box-shadow;
+    ul {
+      color: #666666;
+      list-style: none;
+      padding-left: 0;
 
-      outline: none;
-    }
+      li {
+        display: flex;
 
-    .icon {
-      .box-shadow;
+        button {
+          .box-shadow;
 
-      position: relative;
-      height: 50px;
-      width: 50px;
-      background-color: lightBlue;
-      border-radius: 5px;
-      display: flex;
-      transition: background-color 0.5s;
-      color: white;
+          border: none;
+          font-weight: @font-weight-bold;
+          width: auto;
 
-      &.active {
-        background-color: #5F9B53;
-      }
-
-      &.icon-plug {
-        background-color: orange;
-
-        &.active {
-          background-color: #5F9B53;
+          i {
+            color: #ffffff;
+          }
         }
-      }
 
-      i {
-        font-size: 28px;
-        margin: auto;
+        i {
+          font-size: 30px;
+          padding-right: 10px;
+          width: auto;
+
+          &.fa-dot-circle-o {
+            color: #999999;
+          }
+
+          &.fa-circle {
+            color: #EAEAEA;
+          }
+        }
+
+        label {
+          font-weight: bold;
+          margin: auto auto auto 0;
+        }
       }
     }
   }

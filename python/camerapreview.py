@@ -17,10 +17,9 @@ GPIO.setup(led, GPIO.OUT)
 GPIO.output(led, 1)# Switch on the LED
 camera.start_preview() #Start Camera
 sleep(2) #CameraWarmup
-filename = 'preview-img/' + datetime.now() + '.jpg' # Create timestamped filename
+filename = 'src/preview-img/' + datetime.now().strftime("%Y-%m-%d-%H:%M") + '.jpg' # Create timestamped filename
 camera.capture(filename) # write file
-print ('file', filename)
-return filename
+print filename
 
 GPIO.output(led, 0) # Close LED
 GPIO.cleanup() #cleanup GPIO hooks in kernel
