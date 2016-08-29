@@ -3,7 +3,8 @@
   <head>
     <title></title>
     <base href="/">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
     <!-- vendor libraries -->
     <script src="vendor/jquery/dist/jquery.min.js"></script>
@@ -21,7 +22,7 @@
   </head>
   <body ng-cloak="true" ng-controller="MainCtrl as main" class="container-fluid">
     <div class="row">
-      <div class="col-lg-4 col-sm-12">
+      <div class="col-xs-12 col-md-8">
         <div class="panel panel-primary">
           <div class="panel-heading">Actions</div>
           <ul class="list-group" ng-repeat="actionObj in main.actions">
@@ -39,7 +40,7 @@
           </ul>
         </div>
       </div>
-      <div class="col-lg-5 col-sm-12">
+      <div class="col-xs-12 col-md-2">
         <div class="panel panel-primary" ng-init="main.startSensorArray(5000)">
           <div class="panel-heading">Sensors</div>
           <table class="table">
@@ -52,7 +53,7 @@
           </table>
         </div>
       </div>
-      <div class="col-lg-3 col-sm-12">
+      <div class="col-xs-12 col-md-2">
         <div class="panel panel-primary">
           <div class="panel-heading">Utilities</div>
           <ul class="list-group">
@@ -69,6 +70,11 @@
             </li>
           </ul>
         </div>
+        <button class="btn btn-info"
+          ng-click="main.changeUtilitiesStatus()"
+          style="text-transform: uppercase; font-weight: bold">
+          All Utilities
+        </button>
       </div>
     </div>
   </body>

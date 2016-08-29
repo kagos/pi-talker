@@ -6,8 +6,7 @@ const handleSensorResponse = (resp, sensorObj) => {
       + resp.data.err.traceback;
   }
   else if(resp.data.value) {
-    sensorObj.msg.success = " is "
-      + (sensorObj.conversion ?
+    sensorObj.msg.success = (sensorObj.conversion ?
         sensorObj.conversion(resp.data.value/1) :
         resp.data.value/1)
       + " " + sensorObj.units;
@@ -126,6 +125,12 @@ angular.module('piTalkerApp', [
         }
       });
 
+    _this.changeUtilitiesStatus = () => {
+      for(let x = 0; x < utilities.length; x++) {
+        utilities[x].status = _this.triggerUtilityStatusChange(utilities[x]);
+      }
+    };
+
     _this.changeUtilityStatus = (util) => {
       for(let x = 0; x < utilities.length; x++) {
         if(utilities[x].uid === util.uid) {
@@ -145,6 +150,4 @@ angular.module('piTalkerApp', [
     _this.utilities = utilities;
     _this.sensors = sensors;
     _this.actions = actions;
-
-    //this = _this;
 }]);
