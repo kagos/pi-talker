@@ -1,16 +1,20 @@
 'use strict';
 
-const handleSensorResponse = (resp, units) => {
-  if(!resp)
+const handleSensorResponse = (resp, sensorObj) => {
+  if(!resp || !resp.data)
     return " is not responding"
 
-  if(resp.err)
-    return " is not returning a value; instead, \n" + JSON.stringify(resp.err);
-
-  if(resp.status && !resp.units)
-    return " is " + resp.status;
-
-  return " is " + resp.value[0] + " " + units;
+  if(resp.data.err) {
+    sensorObj.msg.err = " is not returning a value; error: "
+      + resp.data.err.traceback;
+  }
+  else if(resp.data.success) {
+    sensorObj.msg.success = " is "
+      + (sensorObj.conversion ?
+        sensorObj.conversion(resp.data.success/1) :
+        resp.data.success)
+      + " " + sensorObj.units;
+  }
 };
 
 const utilities = [
@@ -43,69 +47,105 @@ const utilities = [
 const sensors = [
   {
     uid: "range",
-    label: "Distance from sensor",
+    label: "Distance",
+    conversion: (val) => val * 2.56,
     units: "inches",
-    statusMsgConfig: handleSensorResponse
+    msg: {
+      success: "",
+      err: ""
+    }
   },
   {
     uid: "brightness",
     label: "Photo Cell",
     units: "Lumens",
-    statusMsgConfig: handleSensorResponse
-  },
-  {
-    uid: "garageDoor",
-    label: "Garage Door",
-    statusMsgConfig: handleSensorResponse
+    msg: {
+      success: "",
+      err: ""
+    }
   }
 ];
 
-const camera = [
+const actions = [
   {
-    uid: "snapshot",
+    uid: "camera",
     label: "Camera",
-    icon: "fa-camera"
+    "available": [
+      {
+        uid: "snapshot",
+        label: "Snapshot",
+        icon: "fa-camera"
+      }
+    ]
+  },
+  {
+    uid: "garage",
+    label: "Garage",
+    "available": [
+      {
+        uid: "door",
+        label: "Door",
+        icon: "fa-car"
+      }
+    ]
   }
 ];
 
 angular.module('piTalkerApp', [
   'ngRoute',
   'ngAnimate'
-]).controller('MainCtrl', ['$http',
-  function($http) {
+]).controller('MainCtrl', ['$http', '$interval',
+  function($http, $interval) {
+    let _this = this;
 
-    this.updateUtilityStatus = function(util) {
+    _this.triggerUtilityStatusChange = (utilObj) =>
+      $http.get("utility/" + utilObj.uid).then((response) =>
+        utilObj.msg = response
+      );
+
+    _this.triggerSensorReading = (sensorObj) =>
+      $http.get("sensor/" + sensorObj.uid).then((response) =>
+        handleSensorResponse(response, sensorObj)
+      );
+
+    _this.triggerAction = (actionObjUid, actionUid) =>
+      $http.get("action/" + actionObjUid + "/" + actionUid).then((response) => {
+        const resp = response.data;
+
+        if(resp.value) {
+          for(let action in actions) {
+            if(actions[action].uid === actionObjUid) {
+              for(let avail in action) {
+                if(actions[action].available[avail].uid === actionUid) {
+                  actions[action].available[avail].msg = resp.value;
+                }
+              }
+            }
+          }
+        }
+      });
+
+    _this.changeUtilityStatus = (util) => {
       for(let x = 0; x < utilities.length; x++) {
         if(utilities[x].uid === util.uid) {
-          $http.get("utility/" + util.uid + "/status").then(function (response) {
-            utilities[x].status = response.data;
-          });
+          utilities[x].status = _this.triggerUtilityStatusChange(util);
         }
       }
     };
 
-    this.triggerSensorReading = function(sensor) {
+    _this.startSensorArray = (intervalLengthMS) => {
       for(let x = 0; x < sensors.length; x++) {
-        if(sensors[x].uid === sensor.uid) {
-          $http.get("sensor/" + sensor.uid).then(function (response) {
-            sensors[x].resp = sensors[x].statusMsgConfig(response.data, sensors[x].units);
-          });
+        if(this.resp && !this.resp.errMsg) {
+          $interval(() => {
+            sensors[x].resp = _this.triggerSensorReading(sensors[x]);
+          }, intervalLengthMS);
         }
       }
     };
 
-    this.triggerCamera = function(func) {
-      for(let x = 0; x < camera.length; x++) {
-        if(camera[x].uid === func.uid) {
-          $http.get("camera/" + func.uid).then(function (response) {
-            let _imgSrc = response.data;
-            camera[x].imgSrc = _imgSrc.replace("/src/","");
-          });
-        }
-      }
-    }
+    _this.utilities = utilities;
+    _this.sensors = sensors;
+    _this.actions = actions;
 
-    this.utilities = utilities;
-    this.sensors = sensors;
-    this.camera = camera;
+    //this = _this;
 }]);

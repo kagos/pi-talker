@@ -21,41 +21,43 @@
   </head>
   <body ng-controller="MainCtrl as main" class="container-fluid">
     <div class="row">
-      <div class="col-lg-6 col-sm-12">
+      <div class="col-lg-4 col-sm-12">
+        <div class="panel panel-primary">
+          <div class="panel-heading">Actions</div>
+          <ul class="list-group" ng-repeat="actionObj in main.actions">
+            <li class="list-group-item" style="display: inline-block"
+              ng-repeat="action in actionObj.available">
+              <button class="btn btn-info btn-md" style="text-transform: uppercase"
+                ng-click="main.triggerAction(actionObj.uid, action.uid)" ng-init="showPreview=(actionObj.uid === 'camera')">
+                {{actionObj.label}} {{action.label}}
+              </button>
+              <img class="thumbnail" src="img/no_image.png" ngSrc="{{action.value}}" width="100%" height="auto" ng-if="showPreview" />
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="col-lg-5 col-sm-12">
+        <div class="panel panel-primary" ng-init="main.startSensorArray(5000)">
+          <div class="panel-heading">Sensors</div>
+          <table class="table">
+            <tr ng-repeat="sensor in main.sensors">
+              <th style="white-space: nowrap">{{sensor.label}}</th>
+              <td ng-init="main.triggerSensorReading(sensor)" style="text-align: left">
+                {{sensor.msg.err || sensor.msg.success}}
+              </td>
+            </tr>
+          </table>
+        </div>
+      </div>
+      <div class="col-lg-3 col-sm-12">
         <div class="panel panel-primary">
           <div class="panel-heading">Utilities</div>
           <ul class="list-group">
             <li ng-repeat="util in main.utilities" class="list-group-item">
-              <i class="fa {{(util.status == 0 || !util.status ? 'fa-circle' : 'fa-dot-circle-o')}}"
+              <i class="fa {{(util.value == 0 || !util.value ? 'fa-circle' : 'fa-dot-circle-o')}}"
                 aria-hidden="true"
-                ng-click="main.updateUtilityStatus(util)"></i>
+                ng-click="main.changeUtilityStatus(util)"></i>
               <label>{{util.label}}</label>
-            </li>
-          </ul>
-        </div>
-      </div>
-      <div class="col-lg-6 col-sm-12">
-        <div class="panel panel-primary">
-          <div class="panel-heading">Sensors</div>
-          <ul class="list-group">
-            <li ng-repeat="sensor in main.sensors" class="list-group-item">
-              <button class="btn btn-info btn-med col-lg-3"
-                ng-click="main.triggerSensorReading(sensor)">{{sensor.label}}</button>
-              <div class="col-lg-9">{{sensor.resp}}</div>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-lg-12 col-sm-12">
-        <div class="panel panel-primary">
-          <div class="panel-heading">Camera Preview</div>
-          <ul class="list-group">
-            <li ng-repeat="func in main.camera" class="list-group-item" style="height: 450px">
-              <button class="btn btn-info btn-med"
-                ng-click="main.triggerCamera(func)"><i class="fa fa-camera"></i></button>
-              <img ng-src="{{func.imgSrc}}" width="auto" height="400" style="margin: 20px;" />
             </li>
           </ul>
         </div>

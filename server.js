@@ -55,11 +55,28 @@ const sensors = {
 	}
 };
 
-const camera = {
-  "snapshot": {
-    activeScript: "camerapreview.py"
+const actions = {
+  "camera": {
+    "snapshot": {
+      activeScript: "camerapreview.py"
+    }
+  },
+  "garage": {
+    "door": {
+      activeScript: "garagedoor.py"
+    }
   }
-}
+};
+
+const runPyScript = (obj, resp) => {
+  PythonShell.run(obj.activeScript, function(_err, _resp) {
+    obj.msg = {
+      err: _err,
+      value: _resp || ""
+    };
+    resp.json(obj.msg);
+  });
+};
 
 app.use(bodyParser.urlencoded({'extended':'true'}));
 app.use(bodyParser.json());
@@ -70,33 +87,22 @@ app.use(express.static(__dirname + '/src'));
 app.get('/', (request, response) => {
   response.sendfile('src/angularIndex.html');
 
-}).get('/utility/:uid/status', (request, response) => {
-  const thisUtil = utilities[request.params.uid];
+}).get('/utility/:uid', (request, response) => {
+  const _util = utilities[request.params.uid];
 
-  utilities[request.params.uid].status = thisUtil.status == 0 ? 1 : 0;
+  utilities[request.params.uid].status = _util.status == 0 ? 1 : 0;
 
-  const activeScript = thisUtil.status == 0 ?
-    thisUtil.offScript : thisUtil.onScript;
+  _util.activeScript = _util.status == 0 ?
+    _util.offScript : _util.onScript;
 
-  PythonShell.run(activeScript, function(err, resp) {
-    utilities[request.params.uid].pyResponse = (err) ? err : resp;
-    response.json(utilities[request.params.uid].status);
-  });
-}).get('/sensor/:uid', (request, response) => {
+  runPyScript(_util, response);
 
-  PythonShell.run(sensors[request.params.uid].activeScript, function(err, resp) {
-    sensors[request.params.uid].pyResponse = {
-      err: err,
-      resp: resp
-    }
-    response.json(sensors[request.params.uid].pyResponse);
-  });
-}).get('/camera/:uid', (request, response) => {
+}).get('/sensor/:uid', (request, response) =>
+  runPyScript(sensors[request.params.uid], response)
 
-  PythonShell.run(camera[request.params.uid].activeScript, function(err, resp) {
-    camera[request.params.uid].imgSrc = resp;
-    response.json(resp || "/img/no_image.png");
-  });
+).get('/action/:objUid/:uid', (request, response) => {
+  runPyScript(actions[request.params.objUid][request.params.uid], response);
+
 });
 
 app.use('/api', router);
