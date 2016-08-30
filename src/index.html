@@ -21,45 +21,43 @@
     <script src="app/app.js"></script>
   </head>
   <body ng-cloak="true" ng-controller="MainCtrl as main" class="container-fluid">
-    <div class="row">
-      <div class="col-xs-12 col-md-8">
-        <div class="panel panel-primary">
-          <div class="panel-heading">Actions</div>
-          <ul class="list-group" ng-repeat="actionObj in main.actions">
-            <li class="list-group-item" style="display: inline-block"
-              ng-repeat="action in actionObj.available">
-              <button class="btn btn-info btn-md" style="text-transform: uppercase"
-                ng-click="main.triggerAction(actionObj.uid, action.uid)"
-                ng-init="showPreview=(actionObj.uid === 'camera')">
-                {{actionObj.label}} {{action.label}}
-              </button>
-              <img class="thumbnail animate-if" src="img/no_image.png"
-                ng-src="{{action.imgSrc}}"
-                width="100%" height="auto" ng-if="showPreview" />
-            </li>
-          </ul>
+    <div class="col-xs-12 col-lg-6">
+      <div class="panel panel-primary">
+        <div class="panel-heading">Actions</div>
+        <div class="panel-body" ng-repeat="actionObj in main.actions">
+          <span ng-repeat="action in actionObj.available">
+            <button class="btn btn-info col-xs-12 col-lg-2"
+              ng-click="main.triggerAction(actionObj.uid, action.uid)"
+              ng-init="showPreview=(actionObj.uid === 'camera')">
+              {{actionObj.label}} {{action.label}}
+            </button>
+            <img class="animate-if col-xs-12 col-lg-9" src="img/no_image.png"
+              ng-src="{{action.imgSrc}}"
+              width="100%" height="auto" ng-if="showPreview" />
+          </span>
         </div>
       </div>
-      <div class="col-xs-12 col-md-2">
-        <div class="panel panel-primary" ng-init="main.startSensorArray(5000)">
-          <div class="panel-heading">Sensors</div>
-          <table class="table">
-            <tr ng-repeat="sensor in main.sensors">
-              <th style="white-space: nowrap" width="100">{{sensor.label}}</th>
-              <td ng-init="main.triggerSensorReading(sensor)">
-                {{sensor.msg.success || sensor.msg.err}}
-              </td>
-            </tr>
-          </table>
-        </div>
+    </div>
+    <div class="col-xs-12 col-lg-3">
+      <div class="panel panel-primary" ng-init="main.startSensorArray(5000)">
+        <div class="panel-heading">Sensors</div>
+        <table class="table panel-body">
+          <tr ng-repeat="sensor in main.sensors">
+            <th style="white-space: nowrap" width="100">{{sensor.label}}</th>
+            <td ng-init="main.triggerSensorReading(sensor)">
+              {{sensor.msg.success || sensor.msg.err}}
+            </td>
+          </tr>
+        </table>
       </div>
-      <div class="col-xs-12 col-md-2">
-        <div class="panel panel-primary">
-          <div class="panel-heading">Utilities</div>
+    </div>
+    <div class="col-xs-12 col-lg-3">
+      <div class="panel panel-primary">
+        <div class="panel-heading">Utilities</div>
+        <div class="panel-body">
           <ul class="list-group">
             <li ng-repeat="util in main.utilities" class="list-group-item">
-              <i class="fa
-                {{!util.msg.data.status
+              <i class="fa {{!util.msg.data.status
                   || (util.msg.data.status === 0 && !util.msg.data.err)
                   || util.msg.data.err ?
                     'fa-circle' : 'fa-dot-circle-o'}}
@@ -69,12 +67,11 @@
               <label>{{util.label}}</label>
             </li>
           </ul>
+          <button class="btn btn-info col-xs-12 col-lg-*"
+            ng-click="main.changeUtilitiesStatus()">
+            All Utilities
+          </button>
         </div>
-        <button class="btn btn-info"
-          ng-click="main.changeUtilitiesStatus()"
-          style="text-transform: uppercase; font-weight: bold">
-          All Utilities
-        </button>
       </div>
     </div>
   </body>
