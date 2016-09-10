@@ -9,69 +9,24 @@ PythonShell.defaultOptions = { scriptPath: './python' };
 
 /* TODO:
 +	 Get init status of Utilities from API
-+	 Pic preview
-++		Create /preview-img/ folder
-+	 ngFramework implemented
 +	 Video stream up
 +	 Config interface for NA
++    Finish DB creation & config
 +	 Security
 ++		config sudo per env
-+	 Utilities from data file
 */
 
-// Define utilites
-const utilities = {
-	"greenLight": {
-		onScript: "lighton.py",
-		offScript: "lightoff.py",
-		status: 0
-	},
-	"light1": {
-		onScript: "light1-on.py",
-		offScript: "light1-off.py",
-		status: 0
-	},
-	"light2": {
-		onScript: "light2-on.py",
-		offScript: "light2-off.py",
-		status: 0
-	},
-	"outlet1": {
-		onScript: "outlet1-on.py",
-		offScript: "outlet1-off.py",
-		status: 0
-	}
-};
+// temp static data
+const dataObj = JSON.parse(require('fs').readFileSync('./db/static-data.json', 'utf8'));
 
-const sensors = {
-	"range": {
-		activeScript: "range.py"
-	},
-	"brightness": {
-		activeScript: "brightness.py"
-	},
-	"garageDoor": {
-		activeScript: "garagedoor.py"
-	}
-};
-
-const actions = {
-  "camera": {
-    "snapshot": {
-      activeScript: "camerapreview.py"
-    }
-  },
-  "garage": {
-    "door": {
-      activeScript: "garagedoor.py"
-    }
-  }
-};
+const utilities = dataObj["utilities"];
+const sensors = dataObj["sensors"];
+const actions = dataObj["actions"];
 
 const runPyScript = (obj, resp) => {
-  PythonShell.run(obj.activeScript, function(_err, _resp) {
+  PythonShell.run(obj.activeScript, obj.passableOptions, (_err, _resp) => {
     obj.msg = {
-      err: _err,
+      err: _err.stack,
       value: Array.isArray(_resp) ? _resp[0] : _resp,
       status: obj.status
     };
@@ -86,24 +41,48 @@ app.use(bodyParser.json({ type: 'application/vnd.api+json' }));
 app.use(express.static(__dirname + '/src'));
 
 app.get('/', (request, response) => {
-  response.sendfile('src/angularIndex.html');
+  response.sendfile('src/index.html');
+  
+}).get('/utilities', (request, response) => response.json(utilities)
 
-}).get('/utility/:uid', (request, response) => {
-  const _util = utilities[request.params.uid];
+).get('/utility/:uid', (request, response) => {
+  
+  for(var x = 0; x < utilities.length; x++) {
+    if(utilities[x].uid === request.params.uid) {
+      let utility = utilities[x];
+      
+      if(utility.status == 0) {
+        utility.status = 1;
+        utility.activeScript = utility.onScript;
+      }
+      else {
+        utility.status = 0;
+        utility.activeScript = utility.offScript;
+      }
+      runPyScript(utility, response);
+    }
+  }
 
-  utilities[request.params.uid].status = _util.status == 0 ? 1 : 0;
-
-  _util.activeScript = _util.status == 0 ?
-    _util.offScript : _util.onScript;
-
-  runPyScript(_util, response);
-
-}).get('/sensor/:uid', (request, response) =>
-  runPyScript(sensors[request.params.uid], response)
-
+}).get('/sensors', (request, response) => response.json(sensors)
+       
+).get('/sensor/:uid', (request, response) => {
+  for(var y = 0; y < sensors.length; y++) {    
+    if(sensors[y].uid == request.params.uid) runPyScript(sensors[y], response);
+  }
+}).get('/actions', (request, response) => response.json(actions)
+  
 ).get('/action/:objUid/:uid', (request, response) => {
-  runPyScript(actions[request.params.objUid][request.params.uid], response);
-
+  for(let z0 = 0; z0 < actions.length; z0++) {
+    const actionObj = actions[z0];
+    if(actionObj.uid === request.params.objUid) { 
+      for(let z1 = 0; z1 < actionObj.available.length; z1++) {
+        const thisAction = actionObj.available[z1];
+        if(thisAction.uid === request.params.uid) {
+          runPyScript(thisAction, response);
+        }
+      }
+    }
+  }
 });
 
 app.use('/api', router);

@@ -19,60 +19,28 @@
 
     <!-- app common -->
     <script src="app/app.js"></script>
+    
+    <script src="app/actions/module.js"></script>
+    <script src="app/actions/component.js"></script>
+    <script src="app/actions/controller.js"></script>
+    
+    <script src="app/sensors/module.js"></script>
+    <script src="app/sensors/component.js"></script>
+    <script src="app/sensors/controller.js"></script>
+    
+    <script src="app/utilities/module.js"></script>
+    <script src="app/utilities/component.js"></script>
+    <script src="app/utilities/controller.js"></script>
   </head>
   <body ng-cloak="true" ng-controller="MainCtrl as main" class="container-fluid">
     <div class="col-xs-12 col-lg-6">
-      <div class="panel panel-primary">
-        <div class="panel-heading">Actions</div>
-        <div class="panel-body" ng-repeat="actionObj in main.actions">
-          <span ng-repeat="action in actionObj.available">
-            <button class="btn btn-info col-xs-12 col-lg-2"
-              ng-click="main.triggerAction(actionObj.uid, action.uid)"
-              ng-init="showPreview=(actionObj.uid === 'camera')">
-              {{actionObj.label}} {{action.label}}
-            </button>
-            <img class="animate-if col-xs-12 col-lg-9" src="img/no_image.png"
-              ng-src="{{action.imgSrc}}"
-              width="100%" height="auto" ng-if="showPreview" />
-          </span>
-        </div>
-      </div>
+      <actions></actions>
     </div>
     <div class="col-xs-12 col-lg-3">
-      <div class="panel panel-primary" ng-init="main.startSensorArray(5000)">
-        <div class="panel-heading">Sensors</div>
-        <table class="table panel-body">
-          <tr ng-repeat="sensor in main.sensors">
-            <th style="white-space: nowrap" width="100">{{sensor.label}}</th>
-            <td ng-init="main.triggerSensorReading(sensor)">
-              {{sensor.msg.success || sensor.msg.err}}
-            </td>
-          </tr>
-        </table>
-      </div>
+      <sensors></sensors>
     </div>
     <div class="col-xs-12 col-lg-3">
-      <div class="panel panel-primary">
-        <div class="panel-heading">Utilities</div>
-        <div class="panel-body">
-          <ul class="list-group">
-            <li ng-repeat="util in main.utilities" class="list-group-item">
-              <i class="fa {{!util.msg.data.status
-                  || (util.msg.data.status === 0 && !util.msg.data.err)
-                  || util.msg.data.err ?
-                    'fa-circle' : 'fa-dot-circle-o'}}
-                {{util.msg.data.err ? 'icon-alert' : ''}}"
-                aria-hidden="true"
-                ng-click="main.changeUtilityStatus(util)"></i>
-              <label>{{util.label}}</label>
-            </li>
-          </ul>
-          <button class="btn btn-info col-xs-12 col-lg-*"
-            ng-click="main.changeUtilitiesStatus()">
-            All Utilities
-          </button>
-        </div>
-      </div>
+      <utilities></utilities>
     </div>
   </body>
 </html>
